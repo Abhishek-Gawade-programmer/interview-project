@@ -1,0 +1,33 @@
+# Environment variables
+.env
+.venv
+env/
+venv/
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.class
+# SQLite database files
+*.db
+*.sqlite3
+*.sqlite
+# Build artifacts
+build/
+dist/
+*.egg-info/
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage
+test.db
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+# Project specific
+documents/
+vector_stores/
+# OS specific
+.DS_Store
+Thumbs.db
