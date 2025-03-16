@@ -2,14 +2,27 @@ import os
 from pathlib import Path
 from typing import List, Dict, Any
 
-from langchain.document_loaders import TextLoader, PyPDFLoader, CSVLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+
+from langchain_community.document_loaders import CSVLoader
+
+from langchain_community.document_loaders import PyPDFLoader
+
+from langchain_community.document_loaders import TextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_openai import ChatOpenAI
 
 from app.core.config import settings
+from langchain_fireworks import FireworksEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="models/embedding-001",
+    google_api_key="AIzaSyDqoM6WCdQfErWc0PqBcDrO428oGVSU-Os",
+)
 
 
 # TODO we add create background task for this
@@ -53,7 +66,7 @@ async def process_document(document_id: int, file_path: str) -> str:
     chunks = text_splitter.split_documents(documents)
 
     # Create embeddings and vector store
-    embeddings = OpenAIEmbeddings(openai_api_key=settings.OPENAI_API_KEY)
+
     vector_store = FAISS.from_documents(chunks, embeddings)
 
     # Save vector store
@@ -74,7 +87,7 @@ async def query_document(vector_store_path: str, query: str) -> str:
         The response from the RAG pipeline.
     """
     # Load vector store
-    embeddings = OpenAIEmbeddings(openai_api_key=settings.OPENAI_API_KEY)
+
     vector_store = FAISS.load_local(vector_store_path, embeddings)
 
     # Create retriever

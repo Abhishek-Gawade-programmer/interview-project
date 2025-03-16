@@ -88,6 +88,8 @@ async def create_document(
         db.commit()
         db.refresh(document)
     except Exception as e:
+        raise e
+        print(f"Failed to process document: {str(e)}")
         # If processing fails, delete document and file
         db.delete(document)
         db.commit()
