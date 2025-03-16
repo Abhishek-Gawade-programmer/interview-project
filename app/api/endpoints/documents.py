@@ -209,6 +209,7 @@ async def query_document_endpoint(
         result = await query_document(document.vector_store_path, query.query)
         return {"query": query.query, "result": result}
     except Exception as e:
+        raise e
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to query document: {str(e)}",
