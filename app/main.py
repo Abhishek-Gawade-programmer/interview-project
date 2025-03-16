@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.endpoints import auth, users, documents, roles
@@ -38,3 +38,9 @@ async def startup_event():
 async def health_check():
     """Health check endpoint."""
     return {"status": "ok", "message": "Service is running"}
+
+
+# Health check endpoint for Railway deployment
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "healthy"}
