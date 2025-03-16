@@ -28,7 +28,7 @@ app.include_router(documents.router, prefix=settings.API_V1_STR, tags=["document
 app.include_router(roles.router, prefix=settings.API_V1_STR, tags=["roles"])
 
 
-@app.on_event("startup")
+@app.get("/setup")
 async def startup_event():
     # Create admin user on startup if it doesn't exist
     create_first_admin()
