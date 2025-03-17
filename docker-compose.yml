@@ -1,1 +1,65 @@
- 
+version: "3"
+
+services:
+  user-service-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=user_service
+    ports:
+      - "5432:5432"
+    volumes:
+      - user-service-data:/var/lib/postgresql/data
+
+  rag-service-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=rag_service
+    ports:
+      - "5433:5432"
+    volumes:
+      - rag-service-data:/var/lib/postgresql/data
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user_service/Dockerfile
+    environment:
+      - POSTGRES_SERVER=user-service-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=user_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user-service-db
+    volumes:
+      - ./user_service:/app
+
+  rag-service:
+    build:
+      context: .
+      dockerfile: rag_service/Dockerfile
+    environment:
+      - POSTGRES_SERVER=rag-service-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=rag_service
+      - USER_SERVICE_URL=http://user-service:8000
+    ports:
+      - "8001:8000"
+    depends_on:
+      - rag-service-db
+      - user-service
+    volumes:
+      - ./rag_service:/app
+      - ./uploads:/app/uploads
+
+volumes:
+  user-service-data:
+  rag-service-data:

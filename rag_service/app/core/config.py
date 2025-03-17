@@ -48,11 +48,12 @@ class Settings(BaseSettings):
     # LLM settings
     DEFAULT_MODEL: str = "gpt-3.5-turbo"
     OPENAI_API_KEY: str = ""
+    EMBEDDING_MODEL: str = "text-embedding-ada-002"
     
     # Vector DB settings
     VECTOR_DB_TYPE: str = "chroma"  # Options: chroma, pinecone, etc.
     VECTOR_DB_URL: Optional[str] = None
-    VECTOR_DB_API_KEY: Optional[str] = None
+    VECTOR_DB_PERSIST_DIR: str = "uploads/chroma_db"
 
     class Config:
         case_sensitive = True

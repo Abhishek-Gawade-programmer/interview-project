@@ -150,14 +150,19 @@ async def process_document(
         # Create chunks
         chunks = document_processor.split_text_into_chunks(document.content)
         
-        # For now, we'll just create chunks in the database without embeddings
-        # In a real implementation, you would generate embeddings and store them in a vector DB
+        # Generate embeddings and store them in the vector DB
+        from app.rag.embeddings import embedding_manager
         from app.models.chunk import Chunk
-        for chunk_text in chunks:
+        
+        # Create embeddings
+        embedding_ids = embedding_manager.create_document_embeddings(chunks, document.id)
+        
+        # Store chunks in database with embedding IDs
+        for i, (chunk_text, embedding_id) in enumerate(zip(chunks, embedding_ids)):
             chunk = Chunk(
                 content=chunk_text,
                 document_id=document.id,
-                embedding_id=None  # Would normally store the ID in the vector DB
+                embedding_id=embedding_id
             )
             db.add(chunk)
         
